@@ -15,14 +15,15 @@ toilets['urinal'] = 'Free';
 
 
 app.get('/toilets', function(req, res) {
+  console.log("### /toilets")
   res.json(toilets);
 });
 
 // Id = name of the place
 app.get('/toilet/:id', function(req, res) {
   if(req.params.id in toilets) {
- 	var toilet = toilets[req.params.id];
- 	console.log("Get the data for " + toilet);
+ 	  var toilet = toilets[req.params.id];
+ 	  console.log("Get the data for " + toilet);
   	res.json(toilet);
   } else {
   	res.statusCode = 404;
@@ -40,6 +41,13 @@ app.put('/update', function(req, res) {
   	} 
   toilets[req.body.id] = req.body.state
   console.log(toilets)
+  res.json(true);
+});
+
+
+app.put('/:id/:state', function(req, res) {
+  toilets[req.params.id] = req.params.state;
+  console.log("# /:id/:state : " + toilets[req.params.id])
   res.json(true);
 });
 
