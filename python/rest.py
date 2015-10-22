@@ -35,17 +35,17 @@ class Rest:
 		self.send_update(payload)
 
 	def send_update(self, msg):
-		#r = requests.put(self.url, json=msg)
+		requests.put(self.url, json=msg)
 		print 'send_update()'
 
 
 # Tests 
-rest = Rest()
+#rest = Rest()
 
-rest.wc1_free()
-rest.wc2_free()
-rest.urinal_free()
+#rest.wc1_free()
+#rest.wc2_free()
+#rest.urinal_free()
 
-rest.wc1_occupied()
-rest.wc2_occupied()
-rest.urinal_occupied()
+#rest.wc1_occupied()
+#rest.wc2_occupied()
+#rest.urinal_occupied()
