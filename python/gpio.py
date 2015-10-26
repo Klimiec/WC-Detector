@@ -99,43 +99,44 @@ class PINS:
 		GPIO.output(self.RELAY, GPIO.HIGH)
 
 # Tested
-	def WC1LedOccupied(self):
+	def wc1_led_occupied(self):
 		#toilet occupied
 		print 'WC1 - LED Red'
 		GPIO.output(self.WC1_LED_RED, GPIO.HIGH)
 		GPIO.output(self.WC1_LED_GREEN, GPIO.LOW)
 
-	def WC1LedFree(self):
+	def wc1_led_free(self):
 		#toilet free
 		print 'WC1 - LED Green'
 		GPIO.output(self.WC1_LED_RED, GPIO.LOW)
 		GPIO.output(self.WC1_LED_GREEN, GPIO.HIGH)
 
-	def WC2LedOccupied(self):
+	def wc2_led_occupied(self):
 		#toilet occupied
 		print 'WC2 - LED Red'
 		GPIO.output(self.WC2_LED_RED, GPIO.HIGH)
 		GPIO.output(self.WC2_LED_GREEN, GPIO.LOW)
 
-	def WC2LedFree(self):
+	def wc2_led_free(self):
 		#toilet free
 		print 'WC2 - LED Green'
 		GPIO.output(self.WC2_LED_RED, GPIO.LOW)
 		GPIO.output(self.WC2_LED_GREEN, GPIO.HIGH)
 
-	def UrinalLedOccupied(self):
+	def urinal_led_occupied(self):
 		#toilet occupied
 		print 'Urinal - LED Red'
 		GPIO.output(self.URINAL_LED_RED, GPIO.HIGH)
 		GPIO.output(self.URINAL_LED_GREEN, GPIO.LOW)
 
-	def UrinalLedFree(self):
+	def urinal_led_free(self):
 		#toilet free
 		print 'Urinal - LED Green'
 		GPIO.output(self.URINAL_LED_RED, GPIO.LOW)
 		GPIO.output(self.URINAL_LED_GREEN, GPIO.HIGH)
 
 	def is_wc1_door_closed(self):
+		#detect if wc1's door are closed
 		if GPIO.input(self.DOOR_WC1_sensor) != 1:
 			print '[True] Door WC1 closed: ', GPIO.input(self.DOOR_WC1_sensor)
 			return True
