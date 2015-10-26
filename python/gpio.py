@@ -5,13 +5,14 @@ class PINS:
 
 	WC1_LED_RED = 2
 	WC1_LED_GREEN = 3
-	DOOR_WC1_sensor = 26
+	WC1_DOOR_sensor = 10
+
 	PIR = 19
 	TRIG = 20
 	ECHO = 21
 	RELAY = 16
 
-	WC2_LED_RED = 10
+	WC2_LED_RED = 4
 	WC2_LED_GREEN = 17
 
 	URINAL_LED_RED = 27
@@ -21,13 +22,13 @@ class PINS:
 	def __init__(self):
 
 		GPIO.cleanup()
-		print 'run constructor'
 		GPIO.setmode(GPIO.BCM)
 		GPIO.setwarnings(False)
 
 		# WC1 
 		GPIO.setup(self.WC1_LED_RED, GPIO.OUT)
 		GPIO.setup(self.WC1_LED_GREEN, GPIO.OUT)
+		GPIO.setup(self.WC1_DOOR_sensor, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 		# WC2
 		GPIO.setup(self.WC2_LED_RED, GPIO.OUT)
@@ -39,9 +40,6 @@ class PINS:
 		
 		#PIR
 		GPIO.setup(self.PIR, GPIO.IN)
-
-		# DOOR WC1 Sensor
-		GPIO.setup(self.DOOR_WC1_sensor, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 		# Relay Board
 		GPIO.setup(self.RELAY, GPIO.OUT)
@@ -81,12 +79,6 @@ class PINS:
 			print '# clean'
 			# return False
 
-	def is_doorWC1_closed(self):
-		if GPIO.input(self.DOOR_WC1_sensor) != 1:
-			print '[True] Door WC1 closed: ', GPIO.input(self.DOOR_WC1_sensor)
-		else:
-			print '[False] Door WC1 open: ', GPIO.input(self.DOOR_WC1_sensor)
-
 	def test(self):
 		print 'LOW'
 		GPIO.output(self.RELAY, GPIO.LOW)
@@ -106,7 +98,7 @@ class PINS:
 		print 'HIGH'
 		GPIO.output(self.RELAY, GPIO.HIGH)
 
-
+# Tested
 	def WC1LedOccupied(self):
 		#toilet occupied
 		print 'WC1 - LED Red'
@@ -143,6 +135,13 @@ class PINS:
 		GPIO.output(self.URINAL_LED_RED, GPIO.LOW)
 		GPIO.output(self.URINAL_LED_GREEN, GPIO.HIGH)
 
+	def is_wc1_door_closed(self):
+		if GPIO.input(self.DOOR_WC1_sensor) != 1:
+			print '[True] Door WC1 closed: ', GPIO.input(self.DOOR_WC1_sensor)
+			return True
+		else:
+			print '[False] Door WC1 open: ', GPIO.input(self.DOOR_WC1_sensor)
+			return False
 
 	def isDoorWc2Closed(self):
 		return True
@@ -179,19 +178,3 @@ class PINS:
 
 # Test 
 g = PINS()
-
-g.WC1LedOccupied()
-g.WC2LedOccupied()
-g.UrinalLedOccupied()
-time.sleep(3)
-g.WC1LedFree()
-g.WC2LedFree()
-g.UrinalLedFree()
-time.sleep(3)
-g.WC1LedOccupied()
-g.WC2LedOccupied()
-g.UrinalLedOccupied()
-time.sleep(3)
-g.WC1LedFree()
-g.WC2LedFree()
-g.UrinalLedFree()
