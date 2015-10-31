@@ -81,8 +81,8 @@ def urinal_worker(state):
 		# send REST 
 		'''
 		rest.update("urinal", "occupied")
-	    '''
-	    logging.debug('Urinal REST - change state of Urinal Free -> Occupied')
+	    	'''
+	   	logging.debug('Urinal REST - change state of Urinal Free -> Occupied')
 		# turn on music - to be implemented
 		logging.debug('Urinal turn on music')
 		while True:
