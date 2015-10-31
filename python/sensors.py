@@ -1,7 +1,11 @@
 import RPi.GPIO as GPIO
 import time
 
-class PINS:
+logging.basicConfig(level=logging.DEBUG,
+                    format='(%(threadName)-10s) %(message)s',
+                    )
+
+class Sensors:
 
 # WC1 
 	WC1_LED_RED = 2
@@ -43,56 +47,82 @@ class PINS:
 		
 	def wc1_led_occupied(self):
 		#toilet occupied
-		print 'WC1 - LED Red'
+		logging.debug('WC1 - LED Red')
 		GPIO.output(self.WC1_LED_RED, GPIO.HIGH)
 		GPIO.output(self.WC1_LED_GREEN, GPIO.LOW)
 
 	def wc1_led_free(self):
 		#toilet free
-		print 'WC1 - LED Green'
+		logging.debug('WC1 - LED Green')
 		GPIO.output(self.WC1_LED_RED, GPIO.LOW)
 		GPIO.output(self.WC1_LED_GREEN, GPIO.HIGH)
 
+	def wc1_fun_on(self):
+		logging.debug('turn on fun in wc1')
+		# add implementation here 
+
+	def wc1_fun_off(self):
+		logging.debug('turn off fun in wc1')
+		# add implementation here 
+
+	def is_wc1_door_closed(self):
+		#detect if wc1's door is closed
+		if GPIO.input(self.DOOR_WC1_sensor) != 1:
+			logging.debug('[True] Door WC1 closed: %s', GPIO.input(self.DOOR_WC1_sensor))
+			return True
+		else:
+			logging.debug('[False] Door WC1 open: %s', GPIO.input(self.DOOR_WC1_sensor))
+			return False
+
+	def is_wc1_motion_detected(self):
+		if GPIO.input(self.WC1_PIR) == 1:
+			logging.debug('Move Detected: %s',GPIO.input(self.WC1_PIR))
+			return True
+		else:
+			logging.debug('# clean: %s', GPIO.input(self.WC1_PIR))
+			return False
+
 	def wc2_led_occupied(self):
 		#toilet occupied
-		print 'WC2 - LED Red'
+		logging.debug('WC2 - LED Red')
 		GPIO.output(self.WC2_LED_RED, GPIO.HIGH)
 		GPIO.output(self.WC2_LED_GREEN, GPIO.LOW)
 
 	def wc2_led_free(self):
 		#toilet free
-		print 'WC2 - LED Green'
+		logging.debug('WC2 - LED Green')
 		GPIO.output(self.WC2_LED_RED, GPIO.LOW)
 		GPIO.output(self.WC2_LED_GREEN, GPIO.HIGH)
 
+	def wc2_fun_on(self):
+		logging.debug('turn on fun in wc2')
+		# add implementation here 
+
+	def wc2_fun_off(self):
+		logging.debug('turn off fun in wc2')
+		# add implementation here 
+		
+	def is_wc2_door_closed(self):
+		#detect if wc2's door is closed
+		# to be implemented
+		return False
+
+	def is_wc2_motion_detected(self):
+		#detect if there is move in wc2
+		# to be implemented
+		return False
+
 	def urinal_led_occupied(self):
 		#toilet occupied
-		print 'Urinal - LED Red'
+		logging.debug('Urinal - LED Red')
 		GPIO.output(self.URINAL_LED_RED, GPIO.HIGH)
 		GPIO.output(self.URINAL_LED_GREEN, GPIO.LOW)
 
 	def urinal_led_free(self):
 		#toilet free
-		print 'Urinal - LED Green'
+		logging.debug('Urinal - LED Green')
 		GPIO.output(self.URINAL_LED_RED, GPIO.LOW)
 		GPIO.output(self.URINAL_LED_GREEN, GPIO.HIGH)
-
-	def is_wc1_door_closed(self):
-		#detect if wc1's door are closed
-		if GPIO.input(self.DOOR_WC1_sensor) != 1:
-			print '[True] Door WC1 closed: ', GPIO.input(self.DOOR_WC1_sensor)
-			return True
-		else:
-			print '[False] Door WC1 open: ', GPIO.input(self.DOOR_WC1_sensor)
-			return False
-
-	def is_wc1_motion_detected(self):
-		if GPIO.input(self.WC1_PIR) == 1:
-			print 'Move Detected: ',GPIO.input(self.WC1_PIR)
-			return True
-		else:
-			print '# clean: ', GPIO.input(self.WC1_PIR)
-			return False
 
 	def get_distance(self):
 		GPIO.output(self.URINAL_TRIG, False)
@@ -110,6 +140,7 @@ class PINS:
 		pulse_duration = pulse_end - pulse_start
 		distance = pulse_duration * 17150
 		distance = round(distance, 2)
+		logging.debug('Distance: %s', distance)
 		return distance
-		print 'Distance: ', distance
 
+		
