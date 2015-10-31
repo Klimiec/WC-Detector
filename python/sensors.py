@@ -68,11 +68,11 @@ class Sensors:
 
 	def is_wc1_door_closed(self):
 		#detect if wc1's door is closed
-		if GPIO.input(self.DOOR_WC1_sensor) != 1:
-			logging.debug('[True] Door WC1 closed: %s', GPIO.input(self.DOOR_WC1_sensor))
+		if GPIO.input(self.WC1_DOOR_sensor) != 1:
+			logging.debug('[True] Door WC1 closed: %s', GPIO.input(self.WC1_DOOR_sensor))
 			return True
 		else:
-			logging.debug('[False] Door WC1 open: %s', GPIO.input(self.DOOR_WC1_sensor))
+			logging.debug('[False] Door WC1 open: %s', GPIO.input(self.WC1_DOOR_sensor))
 			return False
 
 	def is_wc1_motion_detected(self):
