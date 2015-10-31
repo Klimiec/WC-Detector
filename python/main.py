@@ -118,25 +118,3 @@ while True and counter < 10:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
