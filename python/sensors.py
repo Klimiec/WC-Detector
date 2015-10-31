@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import time
+import logging 
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-10s) %(message)s',
@@ -101,7 +102,7 @@ class Sensors:
 	def wc2_fun_off(self):
 		logging.debug('turn off fun in wc2')
 		# add implementation here 
-		
+
 	def is_wc2_door_closed(self):
 		#detect if wc2's door is closed
 		# to be implemented
