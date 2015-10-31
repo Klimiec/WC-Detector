@@ -38,14 +38,3 @@ class Rest:
 		requests.put(self.url, json=msg)
 		print 'send_update()'
 
-
-# Tests 
-#rest = Rest()
-
-#rest.wc1_free()
-#rest.wc2_free()
-#rest.urinal_free()
-
-#rest.wc1_occupied()
-#rest.wc2_occupied()
-#rest.urinal_occupied()
