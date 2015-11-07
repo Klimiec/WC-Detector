@@ -3,23 +3,24 @@
 import RPi.GPIO as GPIO
 import time
 
-TRIG = 11
-ECHO = 0
+URINAL_TRIG = 11
+URINAL_ECHO = 0
 
-GPIO.setup(TRIG, GPIO.OUT)
-GPIO.setup(ECHO, GPIO.IN)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(URINAL_TRIG, GPIO.OUT)
+GPIO.setup(URINAL_ECHO, GPIO.IN)
 
 while True:
-	GPIO.output(self.URINAL_TRIG, False)
+	GPIO.output(URINAL_TRIG, False)
 	time.sleep(0.3)
 
-	GPIO.output(self.URINAL_TRIG, True)
+	GPIO.output(URINAL_TRIG, True)
 	time.sleep(0.00001)
-	GPIO.output(self.URINAL_TRIG, False)
+	GPIO.output(URINAL_TRIG, False)
 
-	while GPIO.input(self.URINAL_ECHO) == 0:
+	while GPIO.input(URINAL_ECHO) == 0:
 		pulse_start = time.time()
-	while GPIO.input(self.URINAL_ECHO) == 1:
+	while GPIO.input(URINAL_ECHO) == 1:
 		pulse_end = time.time()
 
 	pulse_duration = pulse_end - pulse_start
