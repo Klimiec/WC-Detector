@@ -45,6 +45,7 @@ class Sensors:
 		GPIO.setup(self.URINAL_LED_GREEN, GPIO.OUT)
 		GPIO.setup(self.URINAL_TRIG, GPIO.OUT)
 		GPIO.setup(self.URINAL_ECHO, GPIO.IN)
+		print 'sensors constructor end'
 		
 	def wc1_led_occupied(self):
 		#toilet occupied
@@ -69,18 +70,18 @@ class Sensors:
 	def is_wc1_door_closed(self):
 		#detect if wc1's door is closed
 		if GPIO.input(self.WC1_DOOR_sensor) != 1:
-			logging.debug('[True] Door WC1 closed: %s', GPIO.input(self.WC1_DOOR_sensor))
+			#logging.debug('[True] Door WC1 closed: %s', GPIO.input(self.WC1_DOOR_sensor))
 			return True
 		else:
-			logging.debug('[False] Door WC1 open: %s', GPIO.input(self.WC1_DOOR_sensor))
+			#logging.debug('[False] Door WC1 open: %s', GPIO.input(self.WC1_DOOR_sensor))
 			return False
 
 	def is_wc1_motion_detected(self):
 		if GPIO.input(self.WC1_PIR) == 1:
-			logging.debug('Move Detected: %s',GPIO.input(self.WC1_PIR))
+			#logging.debug('Move Detected: %s',GPIO.input(self.WC1_PIR))
 			return True
 		else:
-			logging.debug('# clean: %s', GPIO.input(self.WC1_PIR))
+			#logging.debug('# clean: %s', GPIO.input(self.WC1_PIR))
 			return False
 
 	def wc2_led_occupied(self):
