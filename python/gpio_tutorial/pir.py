@@ -11,5 +11,6 @@ while True:
 		print 'Move Detected: ',GPIO.input(PIR)
 	else:
 		print '# clean: ', GPIO.input(PIR)
-
+	time.sleep(0.1)
+	
 
