@@ -2,6 +2,7 @@
 import RPi.GPIO as GPIO
 import time
 
+GPIO.setmode(GPIO.BCM)
 PIR = 9
 GPIO.setup(PIR, GPIO.IN)
 
