@@ -13,6 +13,7 @@ class Sensors:
 	WC1_LED_GREEN = 3
 	WC1_DOOR_sensor = 10
 	WC1_PIR = 9
+	WC1_FUN = 5
 
 # WC2
 	WC2_LED_RED = 4
@@ -31,18 +32,20 @@ class Sensors:
 		# WC1 
 		GPIO.setup(self.WC1_LED_RED, GPIO.OUT)
 		GPIO.setup(self.WC1_LED_GREEN, GPIO.OUT)
+		GPIO.output(self.WC1_LED_GREEN, GPIO.HIGH)
 		GPIO.setup(self.WC1_DOOR_sensor, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 		GPIO.setup(self.WC1_PIR, GPIO.IN)
-		# Relay Board
-		#GPIO.setup(self.RELAY, GPIO.OUT)
+		GPIO.setup(self.WC1_FUN, GPIO.OUT)
 
 		# WC2
 		GPIO.setup(self.WC2_LED_RED, GPIO.OUT)
 		GPIO.setup(self.WC2_LED_GREEN, GPIO.OUT)
+		GPIO.output(self.WC2_LED_GREEN, GPIO.HIGH)
 	
 		# URINAL
 		GPIO.setup(self.URINAL_LED_RED, GPIO.OUT)
 		GPIO.setup(self.URINAL_LED_GREEN, GPIO.OUT)
+		GPIO.output(self.URINAL_LED_GREEN, GPIO.HIGH)
 		GPIO.setup(self.URINAL_TRIG, GPIO.OUT)
 		GPIO.setup(self.URINAL_ECHO, GPIO.IN)
 		print 'sensors constructor end'
@@ -61,11 +64,11 @@ class Sensors:
 
 	def wc1_fun_on(self):
 		logging.debug('turn on fun in wc1')
-		# add implementation here 
+		GPIO.output(self.WC1_FUN, GPIO.HIGH)
 
 	def wc1_fun_off(self):
 		logging.debug('turn off fun in wc1')
-		# add implementation here 
+		GPIO.output(self.WC1_FUN, GPIO.LOW)
 
 	def is_wc1_door_closed(self):
 		#detect if wc1's door is closed
