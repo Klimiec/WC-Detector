@@ -39,8 +39,9 @@ def wc1_worker(state, gpio):
 			logging.debug('Wc_1 Fun is on for 30 sec .....')
 			# turn off fun 
 			gpio.wc1_fun_off()
-			#break
+			break
 		else:
+			logging.debug('Wc_1 is occupied ...')
 			time.sleep(0.5)
 
 
@@ -103,28 +104,27 @@ def urinal_worker(state):
 
 
 # Main Loop of the program
-counter = 0;
-while True and counter < 10:
-	counter = counter + 1 
-	logging.debug('#Main Thread state: %s', state)
+while True:
 
 	if state['wc1'] == False and gpio.is_wc1_door_closed() == True and gpio.is_wc1_motion_detected() == True:
+		logging.debug('#Main Thread: change state of WC1 (free --> occupied)')
 		state['wc1'] = True
-		rest.update("wc1", "occupied")
+		#rest.update("wc1", "occupied")
 		t = threading.Thread(target=wc1_worker, args=(state,gpio,))
 		t.start()
     
-	elif state['wc2'] == False and gpio.is_wc2_door_closed() == True and gpio.is_wc2_motion_detected() == True:
-		state['wc2'] = True
-		rest.update("wc2", "occupied")
-		t = threading.Thread(target=wc2_worker, args=(state,gpio, ))
-		t.start()
+	
+	#elif state['wc2'] == False and gpio.is_wc2_door_closed() == True and gpio.is_wc2_motion_detected() == True:
+		#state['wc2'] = True
+		#rest.update("wc2", "occupied")
+		#t = threading.Thread(target=wc2_worker, args=(state,gpio, ))
+		#t.start()
 
-	elif state['urinal'] == False and gpio.get_distance() < 50:
-		logging.debug('Urinal is Free, start detecting Urinal  - new thread')
-		t = threading.Thread(target=urinal_worker, args=(state,gpio, ))
-		t.start()
-
+	#elif state['urinal'] == False and gpio.get_distance() < 50:
+		#logging.debug('Urinal is Free, start detecting Urinal  - new thread')
+		#t = threading.Thread(target=urinal_worker, args=(state,gpio, ))
+		#t.start()
+	
 
 
 
