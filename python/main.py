@@ -72,13 +72,10 @@ def wc2_worker(state, gpio):
 
 
 
-def urinal_worker(state):
-	time.sleep(2)
-	if gpio.get_distance() < 10:
-		logging.debug('@urinal monitoring in other thread, current state of the system: %s', state)
-		gpio.urinal_led_occupied() #Red
-		state['urinal'] = True
-		logging.debug('Urinal is now Occupied - change state')
+def urinal_worker(state, gpio):
+	time.sleep(2.5)
+	if gpio.get_distance() < 50:
+		gpio.urinal_led_occupied()
 		# send REST 
 		'''
 		rest.update("urinal", "occupied")
@@ -87,7 +84,7 @@ def urinal_worker(state):
 		# turn on music - to be implemented
 		logging.debug('Urinal turn on music')
 		while True:
-			if gpio.get_distance() > 10:
+			if gpio.get_distance() > 50:
 				state['urinal'] = False
 				logging.debug('Urinal is now Free - change state')
 				# send REST 
@@ -99,20 +96,31 @@ def urinal_worker(state):
 				logging.debug('Urinal REST - change state of Urinal Occupied -> Free')
 				# turn off music - to be implemented
 				logging.debug('Urinal turn off the music')
+				break;
 			else:
+				logging.debug('Urinal is occupied, distance: %s', gpio.get_distance())
 				time.sleep(0.5)
+	else:
+		state['urinal'] = False
 
 
 # Main Loop of the program
 while True:
-
+	logging.debug('#Main Thread, state of the system: %s', state)
+	time.sleep(1)
+	
 	if state['wc1'] == False and gpio.is_wc1_door_closed() == True and gpio.is_wc1_motion_detected() == True:
 		logging.debug('#Main Thread: change state of WC1 (free --> occupied)')
 		state['wc1'] = True
 		#rest.update("wc1", "occupied")
 		t = threading.Thread(target=wc1_worker, args=(state,gpio,))
 		t.start()
-    
+
+	elif state['urinal'] == False and gpio.get_distance() < 50:
+		state['urinal'] = True
+		logging.debug('#Main Thread: URINAL is possibly Free, start detecting Urinal  - new thread')
+		t = threading.Thread(target=urinal_worker, args=(state,gpio, ))
+		t.start()    
 	
 	#elif state['wc2'] == False and gpio.is_wc2_door_closed() == True and gpio.is_wc2_motion_detected() == True:
 		#state['wc2'] = True
@@ -120,10 +128,6 @@ while True:
 		#t = threading.Thread(target=wc2_worker, args=(state,gpio, ))
 		#t.start()
 
-	#elif state['urinal'] == False and gpio.get_distance() < 50:
-		#logging.debug('Urinal is Free, start detecting Urinal  - new thread')
-		#t = threading.Thread(target=urinal_worker, args=(state,gpio, ))
-		#t.start()
 	
 
 
