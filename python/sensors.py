@@ -31,6 +31,7 @@ class Sensors:
 
 		# WC1 
 		GPIO.setup(self.WC1_LED_RED, GPIO.OUT)
+		GPIO.output(self.WC1_LED_RED, GPIO.LOW)
 		GPIO.setup(self.WC1_LED_GREEN, GPIO.OUT)
 		GPIO.output(self.WC1_LED_GREEN, GPIO.HIGH)
 		GPIO.setup(self.WC1_DOOR_sensor, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -39,11 +40,13 @@ class Sensors:
 
 		# WC2
 		GPIO.setup(self.WC2_LED_RED, GPIO.OUT)
+		GPIO.output(self.WC2_LED_RED, GPIO.LOW)
 		GPIO.setup(self.WC2_LED_GREEN, GPIO.OUT)
 		GPIO.output(self.WC2_LED_GREEN, GPIO.HIGH)
 	
 		# URINAL
 		GPIO.setup(self.URINAL_LED_RED, GPIO.OUT)
+		GPIO.output(self.URINAL_LED_RED, GPIO.LOW)
 		GPIO.setup(self.URINAL_LED_GREEN, GPIO.OUT)
 		GPIO.output(self.URINAL_LED_GREEN, GPIO.HIGH)
 		GPIO.setup(self.URINAL_TRIG, GPIO.OUT)
@@ -145,7 +148,6 @@ class Sensors:
 		pulse_duration = pulse_end - pulse_start
 		distance = pulse_duration * 17150
 		distance = round(distance, 2)
-		logging.debug('Distance: %s', distance)
 		return distance
 
 		
