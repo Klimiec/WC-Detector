@@ -2,6 +2,7 @@
 import threading 
 import time
 import logging 
+import pygame
 from sensors import Sensors
 from rest import Rest
 
@@ -76,6 +77,9 @@ def urinal_worker(state, gpio):
 		rest.urinal_occupied()
 	   	logging.debug('Urinal REST - change state of Urinal Free -> Occupied')
 		# turn on music - to be implemented
+		pygame.mixer.init()
+		pygame.mixer.music.load("/home/pi/raspberry_project/music/team.mp3")
+		pygame.mixer.music.play()
 		logging.debug('Urinal turn on music')
 		while True:
 			if gpio.get_distance() > 50:
@@ -88,6 +92,9 @@ def urinal_worker(state, gpio):
 				logging.debug('Urinal REST - change state of Urinal Occupied -> Free')
 				# turn off music - to be implemented
 				logging.debug('Urinal turn off the music')
+				pygame.mixer.music.stop()
+				pygame.mixer.music.pause()
+				pygame.quit()
 				break;
 			else:
 				logging.debug('Urinal is occupied, distance: %s', gpio.get_distance())

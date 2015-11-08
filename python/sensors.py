@@ -37,6 +37,7 @@ class Sensors:
 		GPIO.setup(self.WC1_DOOR_sensor, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 		GPIO.setup(self.WC1_PIR, GPIO.IN)
 		GPIO.setup(self.WC1_FUN, GPIO.OUT)
+		GPIO.output(self.WC1_FUN, GPIO.LOW)
 
 		# WC2
 		GPIO.setup(self.WC2_LED_RED, GPIO.OUT)
