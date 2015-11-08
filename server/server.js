@@ -2,15 +2,10 @@
 
 var express = require('express');
 var bodyParser = require('body-parser');
-var morgan  = require('morgan');
 var fs = require('fs')
 
 
 var app = express();
-
-// logger
-var accessLogStream = fs.createWriteStream('/Users/piotrek/Development/project/node/server/logs/access.log', {flags: 'a'})
-app.use(morgan('combined', {stream: accessLogStream}))
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -24,10 +19,14 @@ toilets['urinal'] = 'Free';
 
 app.get('/toilets', function(req, res) {
   console.log("# /toilets")
+ // res.header('Content-Type', 'application/json');
+  res.header("Access-Control-Allow-Origin", "*");
+  //res.header("Access-Control-Allow-Methods", "GET");
   res.json(toilets);
 });
 
 // Id = name of the place
+// 
 app.get('/toilet/:id', function(req, res) {
   if(req.params.id in toilets) {
  	  var toilet = toilets[req.params.id];
