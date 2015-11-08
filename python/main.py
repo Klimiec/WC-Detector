@@ -26,9 +26,7 @@ def wc1_worker(state, gpio):
 			state['wc1'] = False
 			logging.debug('Wc_1 is now Free - change state')
 			# send REST 
-			'''
-			rest.update("wc1", "free")
-			'''
+			rest.wc1_free()
 			logging.debug('Wc_1 REST - change state of WC_1 Occupied -> Free')
 			# change LED
 			gpio.wc1_led_free()
@@ -53,9 +51,7 @@ def wc2_worker(state, gpio):
 			state['wc2'] = False
 			logging.debug('Wc_2 is now Free - change state')
 			# send REST 
-			'''
-			rest.update("wc2", "free")
-			'''
+			rest.wc2_free()
 			logging.debug('Wc_2 REST - change state of WC_2 Occupied -> Free')
 			# change LED
 			gpio.wc2_led_free()
@@ -77,9 +73,7 @@ def urinal_worker(state, gpio):
 	if gpio.get_distance() < 50:
 		gpio.urinal_led_occupied()
 		# send REST 
-		'''
-		rest.update("urinal", "occupied")
-	    	'''
+		rest.urinal_occupied()
 	   	logging.debug('Urinal REST - change state of Urinal Free -> Occupied')
 		# turn on music - to be implemented
 		logging.debug('Urinal turn on music')
@@ -88,9 +82,7 @@ def urinal_worker(state, gpio):
 				state['urinal'] = False
 				logging.debug('Urinal is now Free - change state')
 				# send REST 
-				'''
-				rest.update("urinal", "free")
-				'''
+				rest.urinal_free()
 				# change LED
 				gpio.urinal_led_free()
 				logging.debug('Urinal REST - change state of Urinal Occupied -> Free')
@@ -112,7 +104,8 @@ while True:
 	if state['wc1'] == False and gpio.is_wc1_door_closed() == True and gpio.is_wc1_motion_detected() == True:
 		logging.debug('#Main Thread: change state of WC1 (free --> occupied)')
 		state['wc1'] = True
-		#rest.update("wc1", "occupied")
+		# send REST 
+		rest.wc1_occupied()
 		t = threading.Thread(target=wc1_worker, args=(state,gpio,))
 		t.start()
 
@@ -122,9 +115,10 @@ while True:
 		t = threading.Thread(target=urinal_worker, args=(state,gpio, ))
 		t.start()    
 	
-	#elif state['wc2'] == False and gpio.is_wc2_door_closed() == True and gpio.is_wc2_motion_detected() == True:
+	elif state['wc2'] == False and gpio.is_wc2_door_closed() == True and gpio.is_wc2_motion_detected() == True:
 		#state['wc2'] = True
-		#rest.update("wc2", "occupied")
+		# send REST 
+		rest.wc2_occupied()
 		#t = threading.Thread(target=wc2_worker, args=(state,gpio, ))
 		#t.start()
 
