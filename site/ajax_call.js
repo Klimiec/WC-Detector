@@ -6,7 +6,7 @@ $(document).ready(function() {
 function ajaxd() { 
   $.ajax({
     type: "GET",
-    url: "http://localhost:8181/toilets",
+    url: "http://10.142.40.33:8181/toilets",
     dataType: 'json',
    success: function(data){
             if (data.wc1 == 'Free') {
