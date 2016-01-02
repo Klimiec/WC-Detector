@@ -7,24 +7,39 @@ URINAL_TRIG = 11
 URINAL_ECHO = 0
 
 GPIO.setmode(GPIO.BCM)
+GPIO.cleanup()
 GPIO.setup(URINAL_TRIG, GPIO.OUT)
+GPIO.output(URINAL_TRIG, False)
 GPIO.setup(URINAL_ECHO, GPIO.IN)
 
-while True:
-	GPIO.output(URINAL_TRIG, False)
-	time.sleep(0.3)
 
-	GPIO.output(URINAL_TRIG, True)
-	time.sleep(0.00001)
-	GPIO.output(URINAL_TRIG, False)
+try:
+	while True:
+		time.sleep(0.5)
 
-	while GPIO.input(URINAL_ECHO) == 0:
+		GPIO.output(URINAL_TRIG, True)
+		time.sleep(0.00001)
+		GPIO.output(URINAL_TRIG, False)
+
+		while GPIO.input(URINAL_ECHO) == 0:
+			pass
 		pulse_start = time.time()
-	while GPIO.input(URINAL_ECHO) == 1:
+
+		while GPIO.input(URINAL_ECHO) == 1:
+			pass
 		pulse_end = time.time()
 
-	pulse_duration = pulse_end - pulse_start
-	distance = pulse_duration * 17150
-	distance = round(distance, 2)
+		pulse_duration = pulse_end - pulse_start
+		distance = pulse_duration * 17000
+		distance = round(distance, 2)
 
-	print 'Distance: ', distance
+		if distance >= 2 and distance <= 400:
+			print 'Distance: ', distance
+		else:
+			print 'Out of range'
+
+finally:
+	GPIO.cleanup()
+
+
+
