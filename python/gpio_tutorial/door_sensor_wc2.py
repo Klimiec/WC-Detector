@@ -12,6 +12,8 @@ try:
 		if GPIO.input(WC2_DOOR_sensor) == 0:
 			print 'Door closed: ', GPIO.input(WC2_DOOR_sensor)
 		else:
-			print 'Door open: '
+			print 'Door open: ', GPIO.input(WC2_DOOR_sensor)
+
+		time.sleep(0.5)
 finally:
 	GPIO.cleanup()
