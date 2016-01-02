@@ -3,7 +3,6 @@
 import RPi.GPIO as GPIO
 import time
 
-
 WC1_LED_RED = 2
 WC1_LED_GREEN = 3
 URINAL_LED_BLUE = 27
