@@ -22,8 +22,8 @@ class Sensors:
 	WC2_DOOR_sensor = 13
 
 # URINAL
-	URINAL_LED_RED = 27
-	URINAL_LED_GREEN = 22
+	URINAL_LED_BLUE = 27
+	#URINAL_LED_GREEN = 22
 	URINAL_TRIG = 11
 	URINAL_ECHO = 0
 
@@ -50,8 +50,8 @@ class Sensors:
 		GPIO.setup(self.WC2_DOOR_sensor, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 	
 		# URINAL
-		GPIO.setup(self.URINAL_LED_RED, GPIO.OUT)
-		GPIO.output(self.URINAL_LED_RED, GPIO.LOW)
+		GPIO.setup(self.URINAL_LED_BLUE, GPIO.OUT)
+		GPIO.output(self.URINAL_LED_BLUE, GPIO.LOW)
 		GPIO.setup(self.URINAL_LED_GREEN, GPIO.OUT)
 		GPIO.output(self.URINAL_LED_GREEN, GPIO.HIGH)
 		GPIO.setup(self.URINAL_TRIG, GPIO.OUT)
@@ -128,13 +128,13 @@ class Sensors:
 	def urinal_led_occupied(self):
 		#toilet occupied
 		logging.debug('Urinal - LED Red')
-		GPIO.output(self.URINAL_LED_RED, GPIO.HIGH)
+		GPIO.output(self.URINAL_LED_BLUE, GPIO.HIGH)
 		GPIO.output(self.URINAL_LED_GREEN, GPIO.LOW)
 
 	def urinal_led_free(self):
 		#toilet free
 		logging.debug('Urinal - LED Green')
-		GPIO.output(self.URINAL_LED_RED, GPIO.LOW)
+		GPIO.output(self.URINAL_LED_BLUE, GPIO.LOW)
 		GPIO.output(self.URINAL_LED_GREEN, GPIO.HIGH)
 
 	def get_distance(self):
