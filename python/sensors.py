@@ -18,6 +18,7 @@ class Sensors:
 # WC2
 	WC2_LED_RED = 4
 	WC2_LED_GREEN = 17
+	WC2_PIR = 6
 
 # URINAL
 	URINAL_LED_RED = 27
@@ -44,6 +45,7 @@ class Sensors:
 		GPIO.output(self.WC2_LED_RED, GPIO.LOW)
 		GPIO.setup(self.WC2_LED_GREEN, GPIO.OUT)
 		GPIO.output(self.WC2_LED_GREEN, GPIO.HIGH)
+		GPIO.setup(self.WC2_PIR, GPIO.IN)
 	
 		# URINAL
 		GPIO.setup(self.URINAL_LED_RED, GPIO.OUT)
