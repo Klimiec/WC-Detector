@@ -75,11 +75,11 @@ class Sensors:
 
 	def wc1_fun_on(self):
 		logging.debug('turn on FUN in WC1')
-		GPIO.output(self.WC1_FUN, GPIO.HIGH)
+		GPIO.output(self.WC1_FUN, GPIO.LOW)
 
 	def wc1_fun_off(self):
 		logging.debug('turn off FUN in WC1')
-		GPIO.output(self.WC1_FUN, GPIO.LOW)
+		GPIO.output(self.WC1_FUN, GPIO.HIGH)
 
 	def is_wc1_door_closed(self):
 		#detect if wc1's door is closed
@@ -110,11 +110,11 @@ class Sensors:
 
 	def wc2_fun_on(self):
 		logging.debug('turn on FUN in WC2')
-		GPIO.output(self.WC2_FUN, GPIO.HIGH)
+		GPIO.output(self.WC2_FUN, GPIO.LOW)
 
 	def wc2_fun_off(self):
 		logging.debug('turn off FUN in WC1')
-		GPIO.output(self.WC1_FUN, GPIO.LOW)
+		GPIO.output(self.WC1_FUN, GPIO.HIGH)
 
 	def is_wc2_door_closed(self):
 		#detect if wc1's door is closed
