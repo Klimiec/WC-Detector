@@ -24,17 +24,45 @@ rest = Rest()
 def wc1_worker(state, gpio):
 	logging.debug('@Wc_1 monitoring in other thread, current state of the system:  %s', state)
 
-	# Check if WC is still ocupied after 4 seconds
-	time.sleep(4)
-	is_motion_detected = False
+	# Check if door are closed for duration of 4 seconds
+	is_door_open = False
+	start = time.time()
+	end = time.time()
+
 	for i in range(10):
-		if gpio.is_wc1_motion_detected():
-			is_motion_detected = True
-			break
+		logging.debug('@Wc_1 monitoring iteracja door:  %s', i)
+		if gpio.is_wc1_door_closed() == False:
+			is_door_open = True
+			end = time.time()
+			logging.debug('Otwarto drzwi WC1 po takim czasie!! :  %s', round((end - start), 2))
 		else:
+			logging.debug('Czy drzwi WC1 sa zamkniete?:  %s', gpio.is_wc1_door_closed())
+			end = time.time()
 			time.sleep(0.1)
 
-	if is_motion_detected == False:
+	pulse= end - start
+	distance = round(pulse, 2)
+	logging.debug('WC1 Czas trwaia 10 iteracji:  %s', distance )
+	logging.debug('WC1 Czy drzwi zostaly otwarte w ciagu 10 iteracji?: %s',  is_door_open)
+
+	is_motion_detected = False
+	if is_door_open == True:
+		pass
+	else:
+		# Check if WC is still ocupied after 4 seconds
+		for i in range(10):
+			logging.debug('@Wc_1 monitoring iteracja PIR:  %s', i)
+			a = time.time()
+			if gpio.is_wc1_motion_detected():
+				is_motion_detected = True
+				logging.debug('@Wc_1 Wykryto ruch w iteracji PIR:  %s', i)
+				b = time.time()
+				logging.debug('@Wc_1 Czas wykrycia ruchu! :  %s', round((b - a), 2))
+				break
+			else:
+				time.sleep(0.1)
+
+	if is_door_open == True or is_motion_detected == False:
 		# change LED
 		gpio.wc1_led_free()
 		# send REST
@@ -47,7 +75,7 @@ def wc1_worker(state, gpio):
 				# change LED
 				gpio.wc1_led_free()
 				# send REST
-				time.sleep(6)
+				#time.sleep(6)
 				state['wc1'] = False
 				rest.wc1_free()
 				# trun on fun for 30 sek
@@ -57,22 +85,48 @@ def wc1_worker(state, gpio):
 				# turn off fun 
 				gpio.wc1_fun_off()
 				break
+			else:
+				time.sleep(0.05)
 
 
 def wc2_worker(state, gpio):
 	logging.debug('@Wc_2  monitoring in other thread, current state of the system: %s', state)
 
-	# Check if WC is still ocupied after 4 seconds
-	time.sleep(4)
-	is_motion_detected = False
+	# Check if door are closed for duration of 4 seconds
+	is_door_open = False
+	start = time.time()
+	end = time.time()
+
 	for i in range(10):
-		if gpio.is_wc2_motion_detected():
-			is_motion_detected = True
-			break
+		logging.debug('@Wc_2 monitoring iteracja:  %s', i)
+		if gpio.is_wc2_door_closed() == False:
+			is_door_open = True
+			end = time.time()
+			logging.debug('Otwarto drzwi WC2 potakim czasie!! :  %s', round((end - start), 2))
 		else:
+			logging.debug('Czy drzwi WC2 sa zamkniete?:  %s', gpio.is_wc2_door_closed())
+			end = time.time()
 			time.sleep(0.1)
+
+	pulse= end - start
+	distance = round(pulse, 2)
+	logging.debug('WC2 Czas trwaia 10 iteracji:  %s', distance )
+	logging.debug('WC2 Czy drzwi zostaly otwarte w ciagu 10 iteracji?: %s',  is_door_open)
+
+
+	is_motion_detected = False
+	if is_door_open == True:
+		pass
+	else:
+		# Check if WC is still ocupied after 4 seconds
+		for i in range(10):
+			if gpio.is_wc2_motion_detected():
+				is_motion_detected = True
+				break
+			else:
+				time.sleep(0.1)
 	
-	if is_motion_detected == False:
+	if is_door_open == True or is_motion_detected == False:
 		# change LED
 		gpio.wc2_led_free()
 		# send REST
@@ -84,7 +138,7 @@ def wc2_worker(state, gpio):
 				# change LED
 				gpio.wc2_led_free()
 				# send REST 
-				time.sleep(6)
+				# time.sleep(6)
 				state['wc2'] = False
 				rest.wc2_free()
 				# trun on fun for 30 sek
@@ -94,6 +148,8 @@ def wc2_worker(state, gpio):
 				# turn off fun 
 				gpio.wc2_fun_off()
 				break
+			else:
+				time.sleep(0.05)
 
 
 
@@ -142,11 +198,6 @@ while True:
 		# start new thread
 		t = threading.Thread(target=wc1_worker, args=(state,gpio,))
 		t.start()
-
-	elif state['urinal'] == False and gpio.urinal_get_distance() < 50:
-		state['urinal'] = True
-		t = threading.Thread(target=urinal_worker, args=(state,gpio, ))
-		t.start()    
 	
 	elif state['wc2'] == False and gpio.is_wc2_door_closed() and gpio.is_wc2_motion_detected():
 		logging.debug('#Main Thread: change state of WC2 (free --> occupied)')
@@ -158,8 +209,5 @@ while True:
 		# start new thread
 		t = threading.Thread(target=wc2_worker, args=(state,gpio,))
 		t.start()
-
-	
-
 
 

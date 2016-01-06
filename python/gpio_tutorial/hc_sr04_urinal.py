@@ -1,5 +1,7 @@
 
 
+
+
 import RPi.GPIO as GPIO
 import time
 
@@ -15,7 +17,7 @@ GPIO.setup(URINAL_ECHO, GPIO.IN)
 
 try:
 	while True:
-		time.sleep(0.5)
+		time.sleep(1.5)
 
 		GPIO.output(URINAL_TRIG, True)
 		time.sleep(0.00001)

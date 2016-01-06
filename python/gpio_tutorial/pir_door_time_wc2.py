@@ -16,7 +16,7 @@ while GPIO.input(WC2_DOOR_sensor) == 1:
 	pass
 start_time = time.time()
 
-while GPIO.input(PIR_WC2) == 1:
+while GPIO.input(WC2_PIR) == 1:
 	pass
 end_time = time.time()
 
