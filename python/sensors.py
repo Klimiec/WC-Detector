@@ -36,7 +36,7 @@ class Sensors:
 		GPIO.setup(self.WC1_LED_RED, GPIO.OUT)
 		GPIO.output(self.WC1_LED_RED, GPIO.HIGH) 
 		GPIO.setup(self.WC1_LED_GREEN, GPIO.OUT)
-		GPIO.output(self.WC1_LED_GREEN, GPIO.LOW)
+		GPIO.output(self.WC1_LED_GREEN, GPIO.HIGH)
 		GPIO.setup(self.WC1_DOOR_sensor, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 		GPIO.setup(self.WC1_PIR, GPIO.IN)
 		GPIO.setup(self.WC1_FUN, GPIO.OUT)
@@ -46,7 +46,7 @@ class Sensors:
 		GPIO.setup(self.WC2_LED_RED, GPIO.OUT)
 		GPIO.output(self.WC2_LED_RED, GPIO.HIGH)
 		GPIO.setup(self.WC2_LED_GREEN, GPIO.OUT)
-		GPIO.output(self.WC2_LED_GREEN, GPIO.LOW)
+		GPIO.output(self.WC2_LED_GREEN, GPIO.HIGH)
 		GPIO.setup(self.WC2_DOOR_sensor, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 		GPIO.setup(self.WC2_PIR, GPIO.IN)
 		GPIO.setup(self.WC2_FUN, GPIO.OUT)
@@ -63,14 +63,15 @@ class Sensors:
 	################################### WC1	
 	def wc1_led_occupied(self):
 		#toilet occupied
-		logging.debug('WC1 - LED Red')
+		#logging.debug('WC1 - LED Red')
+		logging.debug('WC1 - turn off LED Green')
 		GPIO.output(self.WC1_LED_GREEN, GPIO.HIGH)
-		GPIO.output(self.WC1_LED_RED, GPIO.LOW)
+		#GPIO.output(self.WC1_LED_RED, GPIO.LOW)
 
 	def wc1_led_free(self):
 		#toilet free
-		logging.debug('WC1 - LED Green')
-		GPIO.output(self.WC1_LED_RED, GPIO.HIGH)
+		logging.debug('WC1 - turn on LED Green')
+		#GPIO.output(self.WC1_LED_RED, GPIO.HIGH)
 		GPIO.output(self.WC1_LED_GREEN, GPIO.LOW)
 
 	def wc1_fun_on(self):
@@ -100,12 +101,12 @@ class Sensors:
 		#toilet occupied
 		logging.debug('WC2 - LED Red')
 		GPIO.output(self.WC2_LED_GREEN, GPIO.HIGH)
-		GPIO.output(self.WC2_LED_RED, GPIO.LOW)
+		#GPIO.output(self.WC2_LED_RED, GPIO.LOW)
 
 	def wc2_led_free(self):
 		#toilet free
 		logging.debug('WC2 - LED Green')
-		GPIO.output(self.WC2_LED_RED, GPIO.HIGH)
+		#GPIO.output(self.WC2_LED_RED, GPIO.HIGH)
 		GPIO.output(self.WC2_LED_GREEN, GPIO.LOW)
 
 	def wc2_fun_on(self):
