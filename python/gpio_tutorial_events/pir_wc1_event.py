@@ -17,21 +17,17 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(PIR_WC1, GPIO.IN)
 
 def move_callback(channel):  
-	global lock
-	with lock:
-		global detect_time
+	global detect_time
+	if GPIO.input(channel):
 		logging.debug('@WC1 Move detected (0->1) time:  %s  czas trwania CLEAN: %s', round(time.time(), 2), round(time.time() - detect_time , 2))
 		detect_time = time.time()
-
-def clean_callback(channel):
-	global lock
-	with lock:
-		global detect_time
+	else: 
 		logging.debug('@WC1 Clean (1->0) time:  %s  czas trwania MOVE: %s', round(time.time(), 2),round(time.time() - detect_time , 2))
 		detect_time = time.time()
 
-GPIO.add_event_detect(PIR_WC1, GPIO.RISING, callback=move_callback)  
-GPIO.add_event_detect(PIR_WC1, GPIO.FALLING, callback=clean_callback)  
+
+GPIO.add_event_detect(PIR_WC1, GPIO.BOTH, callback=move_callback)  
+
 
 
 # Main Loop
