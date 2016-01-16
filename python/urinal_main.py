@@ -31,8 +31,8 @@ GPIO.add_event_detect(gpio.URINAL_ECHO, GPIO.FALLING, callback=urinal_callback)
 
 def urinal_callback(channel): 
 	global lock
+	global counter
 	with lock:
-		global counter
 		counter += 1
 		time_start = time.time()
 	    logging.debug('@URINAL Move detected!  %s ', counter)
@@ -42,7 +42,7 @@ def urinal_callback(channel):
 	    	# change LED
 	    	gpio.urinal_led_occupied()
 	    	pygame.mixer.init()
-	    	pygame.mixer.music.load("/home/pi/raspberry_project/music/team.mp3")
+	    	pygame.mixer.music.load("/home/pi/raspberry_project/music/c.mp3")
 		    pygame.mixer.music.play()
 		    logging.debug('@URINAL turn on music')
 		    while True:
