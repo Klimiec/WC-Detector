@@ -5,6 +5,7 @@ import time
 
 PIR_OUT = 2
 
+GPIO.cleanup()
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(PIR_OUT, GPIO.IN)
 
