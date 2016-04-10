@@ -71,9 +71,16 @@ class Sensors:
 		else:
 			return False
 
-	def is_wc1_motion_detected(self):
-		#detect if there is move in wc2
+	def is_wc1_motion_detected_by_PIR(self):
+		#detect if there is move in wc1 by PIR sensor
 		if GPIO.input(self.WC1_MOVE_sensor) == 1:
+			return True
+		else:
+			return False
+
+	def is_wc1_motion_detected_by_Microwave(self):
+		#detect if there is move in wc1 by Microwave sensor
+		if GPIO.input(self.WC1_MOVE_sensor) == 0:
 			return True
 		else:
 			return False
@@ -98,9 +105,16 @@ class Sensors:
 		else:
 			return False
 
-	def is_wc2_motion_detected(self):
+	def is_wc2_motion_detected_by_PIR(self):
 		#detect if there is move in wc2
 		if GPIO.input(self.WC2_MOVE_sensor) == 1:
+			return True
+		else:
+			return False
+
+	def is_wc2_motion_detected_by_Microwave(self):
+		#detect if there is move in wc1 by Microwave sensor
+		if GPIO.input(self.WC1_MOVE_sensor) == 0:
 			return True
 		else:
 			return False
