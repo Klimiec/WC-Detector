@@ -12,15 +12,13 @@ class Sensors:
 	WC1_LED_RED = 2
 	WC1_LED_GREEN = 3
 	WC1_DOOR_sensor = 10
-	WC1_PIR = 9
-	WC1_FUN = 5
+	WC1_MOVE_sensor = 9
 
 # WC2
 	WC2_LED_RED = 4
 	WC2_LED_GREEN = 17
 	WC2_DOOR_sensor = 13
-	WC2_PIR = 6
-	WC2_FUN = 19
+	WC2_MOVE_sensor = 6
 
 
 # URINAL
@@ -38,9 +36,8 @@ class Sensors:
 		GPIO.setup(self.WC1_LED_GREEN, GPIO.OUT)
 		GPIO.output(self.WC1_LED_GREEN, GPIO.LOW)
 		GPIO.setup(self.WC1_DOOR_sensor, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-		GPIO.setup(self.WC1_PIR, GPIO.IN)
-		GPIO.setup(self.WC1_FUN, GPIO.OUT)
-		GPIO.output(self.WC1_FUN, GPIO.HIGH)
+		GPIO.setup(self.WC1_MOVE_sensor, GPIO.IN)
+
 
 		# WC2
 		GPIO.setup(self.WC2_LED_RED, GPIO.OUT)
@@ -48,9 +45,7 @@ class Sensors:
 		GPIO.setup(self.WC2_LED_GREEN, GPIO.OUT)
 		GPIO.output(self.WC2_LED_GREEN, GPIO.LOW)
 		GPIO.setup(self.WC2_DOOR_sensor, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-		GPIO.setup(self.WC2_PIR, GPIO.IN)
-		GPIO.setup(self.WC2_FUN, GPIO.OUT)
-		GPIO.output(self.WC2_FUN, GPIO.HIGH)
+		GPIO.setup(self.WC2_MOVE_sensor, GPIO.IN)
 
 		# URINAL
 		GPIO.setup(self.URINAL_LED_BLUE, GPIO.OUT)
@@ -73,14 +68,6 @@ class Sensors:
 		GPIO.output(self.WC1_LED_RED, GPIO.HIGH)
 		GPIO.output(self.WC1_LED_GREEN, GPIO.LOW)
 
-	def wc1_fun_on(self):
-		logging.debug('turn on FUN in WC1')
-		GPIO.output(self.WC1_FUN, GPIO.LOW)
-
-	def wc1_fun_off(self):
-		logging.debug('turn off FUN in WC1')
-		GPIO.output(self.WC1_FUN, GPIO.HIGH)
-
 	def is_wc1_door_closed(self):
 		#detect if wc1's door is closed
 		if GPIO.input(self.WC1_DOOR_sensor) == 0:
@@ -90,7 +77,7 @@ class Sensors:
 
 	def is_wc1_motion_detected(self):
 		#detect if there is move in wc2
-		if GPIO.input(self.WC1_PIR) == 1:
+		if GPIO.input(self.WC1_MOVE_sensor) == 1:
 			return True
 		else:
 			return False
@@ -108,14 +95,6 @@ class Sensors:
 		GPIO.output(self.WC2_LED_RED, GPIO.HIGH)
 		GPIO.output(self.WC2_LED_GREEN, GPIO.LOW)
 
-	def wc2_fun_on(self):
-		logging.debug('turn on FUN in WC2')
-		GPIO.output(self.WC2_FUN, GPIO.LOW)
-
-	def wc2_fun_off(self):
-		logging.debug('turn off FUN in WC1')
-		GPIO.output(self.WC1_FUN, GPIO.HIGH)
-
 	def is_wc2_door_closed(self):
 		#detect if wc1's door is closed
 		if GPIO.input(self.WC2_DOOR_sensor) == 0:
@@ -125,7 +104,7 @@ class Sensors:
 
 	def is_wc2_motion_detected(self):
 		#detect if there is move in wc2
-		if GPIO.input(self.WC2_PIR) == 1:
+		if GPIO.input(self.WC2_MOVE_sensor) == 1:
 			return True
 		else:
 			return False
