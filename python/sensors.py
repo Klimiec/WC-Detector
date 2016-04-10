@@ -23,8 +23,7 @@ class Sensors:
 
 # URINAL
 	URINAL_LED_BLUE = 27
-	URINAL_TRIG = 11
-	URINAL_ECHO = 0
+	URINAL_DISTANCE_sensor = 0
 
 	def __init__(self):
 		GPIO.setmode(GPIO.BCM)
@@ -50,10 +49,7 @@ class Sensors:
 		# URINAL
 		GPIO.setup(self.URINAL_LED_BLUE, GPIO.OUT)
 		GPIO.output(self.URINAL_LED_BLUE, GPIO.HIGH)
-		GPIO.setup(self.URINAL_TRIG, GPIO.OUT)
-		GPIO.output(self.URINAL_TRIG, False)
-		GPIO.setup(self.URINAL_ECHO, GPIO.IN)
-		logging.debug('sensors constructor end')
+		GPIO.setup(self.URINAL_DISTANCE_sensor, GPIO.IN)
 	
 	################################### WC1	
 	def wc1_led_occupied(self):
@@ -120,28 +116,9 @@ class Sensors:
 		logging.debug('Urinal - LED Blue off')
 		GPIO.output(self.URINAL_LED_BLUE, GPIO.HIGH)
 
-	def urinal_get_distance(self):
-
-		time.sleep(0.3)
-
-		GPIO.output(self.URINAL_TRIG, True)
-		time.sleep(0.00001)
-		GPIO.output(self.URINAL_TRIG, False)
-
-		while GPIO.input(self.URINAL_ECHO) == 0:
-			pass
-		pulse_start = time.time()
-
-		while GPIO.input(self.URINAL_ECHO) == 1:
-			pass
-		pulse_end = time.time()
-
-		pulse_duration = pulse_end - pulse_start
-		distance = pulse_duration * 17000
-		distance = round(distance, 2)
-
-		if distance >= 2 and distance <= 400:
-			return distance
+	def is_urinal_motion_detected(self):
+		#detect if there is move in urinal
+		if GPIO.input(self.URINAL_DISTANCE_sensor) == 0:
+			return True
 		else:
-			return -1
-		
+			return False
