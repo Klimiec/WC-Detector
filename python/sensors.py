@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 import logging 
+import pygame
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-10s) %(message)s',
@@ -130,9 +131,23 @@ class Sensors:
 		logging.debug('Urinal - LED Blue off')
 		GPIO.output(self.URINAL_LED_BLUE, GPIO.HIGH)
 
-	def is_urinal_motion_detected(self):
+	def is_urinal_person_presence_detected(self):
 		#detect if there is move in urinal
 		if GPIO.input(self.URINAL_DISTANCE_sensor) == 0:
 			return True
 		else:
 			return False
+
+	def urinal_turn_on_music(self):
+		#turn on music 
+		pygame.mixer.init()
+		pygame.mixer.music.load("/home/pi/raspberry_project/music/gm.mp3")
+		pygame.mixer.music.play()
+		logging.debug('Urinal turn on music')
+
+	def urinal_turn_off_music(self):
+		#turn off music 
+		pygame.mixer.music.stop()
+		pygame.mixer.music.pause()
+		pygame.quit()
+
