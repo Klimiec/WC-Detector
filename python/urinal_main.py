@@ -1,63 +1,62 @@
 
-
-
-import threading 
+import threading
 import time
-import logging 
+import logging
 from sensors import Sensors
-
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-10s) %(message)s',
                     )
 
-# Global State 
-URINAL_OCCUPIED = False
+# Global
 gpio = Sensors()
+lock = threading.Lock()
+
+detection_counter = 0
+usage_counter = 0
+
+######### Urinal Worker #########
+
+def urinal_callback(channel):
+        global lock
+        global detection_counter
+        global usage_counter
+
+        with lock:
+                 detection_counter += 1
+                 detection_time = time.time()
+                 logging.debug('@URINAL Move detected, detection counter:  %s, detection time: %s', detection_counter, detection_time)
+                 time.sleep(0.5)
+
+                 if gpio.is_urinal_person_presence_detected():
+                        # Urinal occupied
+                        gpio.urinal_led_occupied()
+                        gpio.urinal_turn_on_music()
+                        # SEND REST
+                        usage_counter += 1
+                        while True:
+                                time.sleep(0.5)
+                                if not gpio.is_urinal_person_presence_detected():
+                                        # Urinal is free occupied
+                                        urinal_free_time = time.time()
+                                        usage_time = round(urinal_free_time-detection_time, 2)
+
+                                        logging.debug('@URINAL total usage time: %s ', usage_time)
+                                        logging.debug('------------------------------------- Usage counter:  %s \n\n', usage_counter)
+
+                                        gpio.urinal_led_free()
+                                        # SEND REST
+                                        time.sleep(3)
+                                        gpio.urinal_turn_off_music()
+                                        break;
 
 
 
-def urinal_worker(state, gpio):
-	# wait to determine if sb is using urinal
-	time.sleep(1.5)
-	if gpio.is_urinal_person_presence_detected():
-		# change LED
-		gpio.urinal_led_occupied()
-		# send REST 
-			#rest.urinal_occupied()
-		# turn on music
-		gpio.urinal_turn_on_music()
-
-		while True:
-			if  gpio.is_urinal_person_presence_detected() == False:
-				# change LED
-				gpio.urinal_led_free()
-				# send REST 
-					# rest.urinal_free()
-				# turn off music
-				gpio.urinal_turn_off_music()
-				# change global state of urinal
-				state = False
-				break;
-			else:
-				time.sleep(0.5)
-	else:
-		# change global state of urinal
-		state = False
-
-
+######### Urinal Worker #########
+# Urinal event callback
+GPIO.add_event_detect(gpio.URINAL_DISTANCE_sensor, GPIO.FALLING, callback=urinal_callback)
 
 # Main Loop of the program
 while True:
-	if  URINAL_OCCUPIED == False and gpio.is_urinal_person_presence_detected():
-		# change state of the URINAL to occupied
-		logging.debug('#Main Thread: change state of the URINAL (Free --> Occupied)')
-		# change global state of urinal
-		URINAL_OCCUPIED = True
-		# start new thread
-		t = threading.Thread(target=urinal_worker, args=(URINAL_OCCUPIED,gpio,))
-		t.start()
-	else:
-		time.sleep(0.5)
-
-	
+        time.sleep(1)
+        pass
