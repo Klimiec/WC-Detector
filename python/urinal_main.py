@@ -22,11 +22,12 @@ def urinal_callback(channel):
         global detection_counter
         global usage_counter
 
+        logging.debug('Urinal, start new thread, time:  %s ',time.time())
         with lock:
                  detection_counter += 1
                  detection_time = time.time()
-                 logging.debug('@URINAL Move detected, detection counter:  %s, detection time: %s', detection_counter, detection_time)
-                 time.sleep(0.5)
+                 logging.debug('@URINAL Person detected, detection counter:  %s, detection time: %s', detection_counter, detection_time)
+                 time.sleep(0.7)
 
                  if gpio.is_urinal_person_presence_detected():
                         # Urinal occupied
