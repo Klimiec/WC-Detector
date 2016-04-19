@@ -21,7 +21,7 @@ def wc1_callback(channel):
 
 	# Check if there is thread already
 	if WC1_OCCUPIED != False:
-		logging.debug('		@Wc_1 kill new thread, time: %s ',time.time())
+		logging.debug('   @Wc_1 kill new thread, one is already running, time: %s ',time.time())
 		return
 
 	global lock
@@ -55,11 +55,11 @@ def wc1_callback(channel):
 	
 
 		# Wait foor door to be open 
+		logging.debug('#Step 3 ------------')
 		start_third_check = time.time()
 		last_time_move_detected = time.time()
 		GPIO.add_event_detect(GPIO.WC1_MOVE_sensor, GPIO.FALLING)
 
-		logging.debug('#Step 3 ------------')
 		while True:
 			no_move_time = round((time.time() - last_time_move_detected), 2)
 
