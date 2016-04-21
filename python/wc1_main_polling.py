@@ -22,13 +22,14 @@ def wc1_worker(state, gpio):
 	global usage_counter
 
 	# Check if door are closed for duration of 2 seconds
+	# Give time move sensor to stop showing previous state.
 	logging.debug('#STEP 1 ------------')
 
 	start_first_check = time.time()
 	for i in range(40):
 		logging.debug('	@Wc_1 closed door monitoring, iteration:  %s', i)
 		if gpio.is_wc1_door_closed() == False:
-			logging.debug('	@Wc_1 door opened, stop wc1 thread, wc is free  after iteration:  %s', i)
+			logging.debug('	@Wc_1 door opened, stop wc1 thread, wc is free  after iteration number:  %s', i)
 			state = False
 			return
 		else:
@@ -39,6 +40,7 @@ def wc1_worker(state, gpio):
 
 
 	# Check if there is a move for 10 second and door are still closed
+	# If move detected and door still closed go to the next step
 	logging.debug('#STEP 2 ------------')
 
 	start_second_check = time.time()
@@ -73,18 +75,20 @@ def wc1_worker(state, gpio):
 			# send REST
 			state = False
 			return
-		elif gpio.is_wc1_motion_detected_by_Microwave():
-			  logging.debug('	@Wc_1 move detected after %s seconds ,keep going...', round((time.time() - last_time_move_detected), 2))
-			  last_time_move_detected = time.time()
-			  time.sleep(0.1)
 		elif no_move_time > 3:
 			logging.debug('------------@Wc_1 no move detected for 3 minutes, stop procedure')
 			# no move for more than 3 minutes
 			gpio.wc1_led_free();
 			# send REST
 			state = False
+			return
+		elif gpio.is_wc1_motion_detected_by_Microwave():
+			  logging.debug('	@Wc_1 move detected after %s seconds ,keep going...', round((time.time() - last_time_move_detected), 2))
+			  last_time_move_detected = time.time()
+			  time.sleep(0.1)
+			  no_move_time = 0
 		else:
-			time.sleep(0.05)
+			time.sleep(0.1)
 			no_move_time = round((time.time() - last_time_move_detected), 2)
 
 
@@ -92,10 +96,10 @@ def wc1_worker(state, gpio):
 # Main Loop of the program
 while True:
 	if  WC1_OCCUPIED == False and gpio.is_wc1_door_closed() and gpio.is_wc1_motion_detected_by_Microwave():
-		# change state of the WC1 to occupied
+		# change state of the WC1 to occupied, only one thread can be started at the time
 		WC1_OCCUPIED = True
 		detection_counter += 1
-		logging.debug('#Main Thread |  change state of the WC1 (Free --> Occupied) | time:  %s | detection counter: %s', time.time(), detection_counter)
+		logging.debug('#Main Thread |  change state of the WC1 (Free --> Occupied) | time:  %s | detection counter(threads): %s', time.time(), detection_counter)
 		# start new thread
 		t = threading.Thread(target=wc1_worker, args=(WC1_OCCUPIED,gpio,))
 		t.start()
