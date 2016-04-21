@@ -43,17 +43,15 @@ def wc1_callback(channel):
 		logging.debug('@Wc_1 door opened while checking move for the first time, stop procedure: %s', time.time())
 		WC1_OCCUPIED = False
 		return
-		# Wait foor door to be open 
-		logging.debug('#Step 3 ------------')
-		start_third_check = time.time()
-		last_time_move_detected = time.time()
-		GPIO.add_event_detect(GPIO.WC1_MOVE_sensor, GPIO.FALLING)
 
-		# Wait foor door to be open 
-		logging.debug('#Step 3 ------------')
-		start_third_check = time.time()
-		last_time_move_detected = time.time()
-		GPIO.add_event_detect(GPIO.WC1_MOVE_sensor, GPIO.FALLING)
+	# Wait foor door to be open 
+	logging.debug('#Step 3 ------------')
+	start_third_check = time.time()
+	last_time_move_detected = time.time()
+	GPIO.add_event_detect(GPIO.WC1_MOVE_sensor, GPIO.FALLING)
+
+	usage_counter += 1
+	logging.debug('@Wc1 #Usage number:  %s ',usage_counter)
 
 	while True:
 		no_move_time = round((time.time() - last_time_move_detected), 2)
@@ -69,14 +67,14 @@ def wc1_callback(channel):
 			logging.debug('@Wc_1 no move detected for 3 minutes, stop procedure')
 			break
 		else:
-			time.sleep(0.5)
+			time.sleep(1)
 
-		# things to do after wc1 is free
-		GPIO.remove_event_detect(gpio.WC1_DOOR_sensor)
-		GPIO.remove_event_detect(gpio.WC1_MOVE_sensor)
-		gpio.wc1_led_free();
-		# send REST
-		WC1_OCCUPIED = False
+	# things to do after wc1 is free
+	GPIO.remove_event_detect(gpio.WC1_DOOR_sensor)
+	GPIO.remove_event_detect(gpio.WC1_MOVE_sensor)
+	gpio.wc1_led_free();
+	# send REST
+	WC1_OCCUPIED = False
 
 
 

@@ -14,6 +14,8 @@ logging.basicConfig(level=logging.DEBUG,
 lock = threading.Lock()
 WC1_OCCUPIED = False
 gpio = Sensors()
+usage_counter = 0
+
 
 ######### WC1 Worker #########
 
@@ -23,6 +25,9 @@ def wc1_callback(channel):
 	if WC1_OCCUPIED != False:
 		logging.debug('   @Wc_1 kill new thread, one is already running, time: %s ',time.time())
 		return
+	else:
+		logging.debug('   @Wc_1 start new thread %s ',time.time())
+
 
 	global lock
 	with lock:
@@ -40,7 +45,7 @@ def wc1_callback(channel):
 			WC1_OCCUPIED = False
 			return
 		else:
-			logging.debug('@Wc_1 door still closed, check time:  %s ',round((time.time() - start_first_check), 2))
+			logging.debug('@Wc_1 door still closed, duration of first check:  %s ',round((time.time() - start_first_check), 2))
 
 
 
@@ -49,7 +54,7 @@ def wc1_callback(channel):
 		move_detection = GPIO.wait_for_edge(gpio.WC1_MOVE_sensor, GPIO.FALLING, timeout=10000)
 		if move_detection is None or GPIO.event_detected(channel):
 			GPIO.remove_event_detect(gpio.WC1_DOOR_sensor)
-			logging.debug('@Wc_1 door opened while checking move for the first time, stop procedure: %s', time.time())
+			logging.debug('@Wc_1 door opened while checking move for the first time OR no move for 10 seconds, stop procedure: %s', time.time())
 			WC1_OCCUPIED = False
 			return
 	
@@ -60,29 +65,31 @@ def wc1_callback(channel):
 		last_time_move_detected = time.time()
 		GPIO.add_event_detect(GPIO.WC1_MOVE_sensor, GPIO.FALLING)
 
+		usage_counter += 1
+		logging.debug('@Wc1 #Usage number:  %s ',usage_counter)
+
 		while True:
 			no_move_time = round((time.time() - last_time_move_detected), 2)
 
 			if GPIO.event_detected(gpio.WC1_DOOR_sensor):
 				logging.debug('@Wc_1 door opened, stop procedure, stop time: %s, total time: %s',time.time(), round((time.time() - start_third_check), 2))
-				GPIO.remove_event_detect(gpio.WC1_DOOR_sensor)
-				GPIO.remove_event_detect(gpio.WC1_MOVE_sensor)
-				gpio.wc1_led_free();
-				# send REST
-				return 
+				break 
 			elif GPIO.event_detected(gpio.WC1_MOVE_sensor):
 				logging.debug('@Wc_1 move detected after %s seconds ,keep going...', round((time.time() - last_time_move_detected), 2))
 				last_time_move_detected = time.time()
-				time.sleep(0.1)
+				time.sleep(1)
 			elif no_move_time > 3:
 				logging.debug('@Wc_1 no move detected for 3 minutes, stop procedure')
-				GPIO.remove_event_detect(channel)
-				GPIO.remove_event_detect(GPIO.WC1_MOVE_sensor)
-				gpio.wc1_led_free();
-				# send REST
-				return
+				break
 			else:
-				time.sleep(0.1)
+				time.sleep(1)
+
+		# things to do after wc1 is free
+		GPIO.remove_event_detect(gpio.WC1_DOOR_sensor)
+		GPIO.remove_event_detect(gpio.WC1_MOVE_sensor)
+		gpio.wc1_led_free();
+		# send REST
+		WC1_OCCUPIED = False
 
 
 

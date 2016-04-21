@@ -67,6 +67,9 @@ def wc1_worker(state, gpio):
 	start_third_check = time.time()
 	last_time_move_detected = time.time()
 	no_move_time = 0
+	usage_counter += 1
+	logging.debug('@Wc1 #Usage number:  %s ',usage_counter)
+	
 	while True:
 		if gpio.is_wc1_door_closed() == False:
 			logging.debug('------------@Wc_1 door opened, stop procedure, stop time: %s, total time: %s',time.time(), round((time.time() - start_third_check), 2))
