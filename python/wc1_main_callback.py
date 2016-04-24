@@ -24,10 +24,10 @@ def wc1_callback(channel):
 
 	# Check if there is thread already
 	if WC1_OCCUPIED != False:
-		logging.debug('   @Wc_1 kill new thread, one is already running, time: %s ',time.time())
+		logging.debug('   @Wc_1 kill new thread, one is already running, time: %s ', time.strftime("%H:%M:%S"))
 		return
 	else:
-		logging.debug('   @Wc_1 start new thread %s ',time.time())
+		logging.debug('   @Wc_1 start new thread %s ', time.strftime("%H:%M:%S"))
 
 
 	global lock
@@ -41,7 +41,7 @@ def wc1_callback(channel):
 
 		# check if door has been opened after 3 seconds
 		if GPIO.event_detected(channel):
-			logging.debug('@Wc_1 door opened, stop procedure, stop time: %s ',time.time())
+			logging.debug('@Wc_1 door opened, stop procedure, stop time: %s ', time.strftime("%H:%M:%S"))
 			GPIO.remove_event_detect(gpio.WC1_DOOR_sensor)
 			WC1_OCCUPIED = False
 			return
@@ -55,7 +55,7 @@ def wc1_callback(channel):
 		move_detection = GPIO.wait_for_edge(gpio.WC1_MOVE_sensor, GPIO.FALLING, timeout=10000)
 		if move_detection is None or GPIO.event_detected(channel):
 			GPIO.remove_event_detect(gpio.WC1_DOOR_sensor)
-			logging.debug('@Wc_1 door opened while checking move for the first time OR no move for 10 seconds, stop procedure: %s', time.time())
+			logging.debug('@Wc_1 door opened while checking move for the first time OR no move for 10 seconds, stop procedure: %s', time.strftime("%H:%M:%S"))
 			WC1_OCCUPIED = False
 			return
 	
@@ -73,7 +73,7 @@ def wc1_callback(channel):
 			no_move_time = round((time.time() - last_time_move_detected), 2)
 
 			if GPIO.event_detected(gpio.WC1_DOOR_sensor):
-				logging.debug('@Wc_1 door opened, stop procedure, stop time: %s, total time: %s',time.time(), round((time.time() - start_third_check), 2))
+				logging.debug('@Wc_1 door opened, stop procedure, stop time: %s, total time: %s', time.strftime("%H:%M:%S"), round((time.time() - start_third_check), 2))
 				break 
 			elif GPIO.event_detected(gpio.WC1_MOVE_sensor):
 				logging.debug('@Wc_1 move detected after %s seconds ,keep going...', round((time.time() - last_time_move_detected), 2))
