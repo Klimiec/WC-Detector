@@ -23,12 +23,12 @@ def urinal_callback(channel):
         global detection_counter
         global usage_counter
 
-        logging.debug('Urinal, start new thread, time:  %s ',time.time())
+        logging.debug('Urinal, start new thread, time:  %s ',time.strftime("%H:%M:%S"))
         with lock:
                  detection_counter += 1
                  detection_time = time.time()
-                 logging.debug('@URINAL Person detected, detection counter:  %s, detection time: %s', detection_counter, detection_time)
-                 time.sleep(0.7)
+                 logging.debug('@URINAL Person detected, detection counter:  %s, detection time: %s', detection_counter, time.strftime("%H:%M:%S"))
+                 time.sleep(1.5)
 
                  if gpio.is_urinal_person_presence_detected():
                         # Urinal occupied
@@ -37,20 +37,22 @@ def urinal_callback(channel):
                         # SEND REST
                         usage_counter += 1
                         while True:
-                                time.sleep(0.5)
+                                time.sleep(0.1)
                                 if not gpio.is_urinal_person_presence_detected():
                                         # Urinal is free occupied
-                                        urinal_free_time = time.time()
-                                        usage_time = round(urinal_free_time-detection_time, 2)
+                                        usage_time = round(time.time()-detection_time, 2)
 
                                         logging.debug('@URINAL total usage time: %s ', usage_time)
                                         logging.debug('------------------------------------- Usage counter:  %s \n\n', usage_counter)
 
                                         gpio.urinal_led_free()
                                         # SEND REST
-                                        time.sleep(3)
+                                        time.sleep(2.5)
                                         gpio.urinal_turn_off_music()
-                                        break;
+                                        break
+                    else:
+                        logging.debug('@URINAL False detection!')
+
 
 
 
@@ -60,5 +62,5 @@ GPIO.add_event_detect(gpio.URINAL_DISTANCE_sensor, GPIO.FALLING, callback=urinal
 
 # Main Loop of the program
 while True:
-        time.sleep(1)
+        time.sleep(10)
         pass
