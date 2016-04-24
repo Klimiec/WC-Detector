@@ -4,6 +4,7 @@ import threading
 import time
 import logging 
 from sensors import Sensors
+import RPi.GPIO as GPIO
 
 
 logging.basicConfig(level=logging.DEBUG,
