@@ -7,7 +7,7 @@ detection_counter = 0
 last_time_move_detected= time.time() 
 
 while True:
-	if gpio.is_wc1_motion_detected_by_Microwave():
+	if gpio.is_wc1_motion_detected_by_PIR():
 		detection_counter += 1
 		time_elapsed = time.time() - last_time_move_detected
 		last_time_move_detected = time.time() 
