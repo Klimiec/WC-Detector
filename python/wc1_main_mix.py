@@ -22,25 +22,23 @@ def wc1_callback(channel):
 	
 	# Check door 
 	logging.debug('#STEP 1 ------------')
-	GPIO.add_event_detect(gpio.WC1_DOOR_sensor, GPIO.RISING)
-	start_first_check = time.time()
-	time.sleep(3)
+	#GPIO.add_event_detect(gpio.WC1_DOOR_sensor, GPIO.RISING)
+	#time.sleep(3)
 
+	start_first_check = time.time()
+	door_detection = GPIO.wait_for_edge(gpio.WC1_DOOR_sensor, GPIO.RISING, timeout=3000)
 	# check if door has been opened after 3 seconds
-	if GPIO.event_detected(channel):
+	if  door_detection is None
+		logging.debug('@Wc_1 door still closed, check time:  %s ',round((time.time() - start_first_check), 2))
+	else:
 		logging.debug('@Wc_1 door opened, stop procedure, stop time: %s ', time.strftime("%H:%M:%S"))
-		GPIO.remove_event_detect(gpio.WC1_DOOR_sensor)
 		WC1_OCCUPIED = False
 		return
-	else:
-		logging.debug('@Wc_1 door still closed, check time:  %s ',round((time.time() - start_first_check), 2))
-
 
 	# Check if there is a move for 10 second and door are still closed
 	logging.debug('#STEP 2 ------------')
 	move_detection = GPIO.wait_for_edge(gpio.WC1_MOVE_sensor, GPIO.FALLING, timeout=10000)
 	if move_detection is None or GPIO.event_detected(channel):
-		GPIO.remove_event_detect(gpio.WC1_DOOR_sensor)
 		logging.debug('@Wc_1 door opened while checking move for the first time, stop procedure, stop time: %s', time.strftime("%H:%M:%S"))
 		WC1_OCCUPIED = False
 		return
@@ -50,6 +48,7 @@ def wc1_callback(channel):
 	start_third_check = time.time()
 	last_time_move_detected = time.time()
 	GPIO.add_event_detect(GPIO.WC1_MOVE_sensor, GPIO.FALLING)
+	GPIO.add_event_detect(gpio.WC1_DOOR_sensor, GPIO.RISING)
 
 	usage_counter += 1
 	logging.debug('@Wc1 #Usage number:  %s ',usage_counter)
