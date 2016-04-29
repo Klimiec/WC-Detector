@@ -78,7 +78,7 @@ def wc1_worker(state, gpio):
 			# send REST
 			state = False
 			return
-		elif no_move_time > 3:
+		elif no_move_time > 200:
 			logging.debug('------------@Wc_1 no move detected for 3 minutes, stop procedure')
 			# no move for more than 3 minutes
 			gpio.wc1_led_free();

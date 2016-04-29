@@ -79,7 +79,7 @@ def wc1_callback(channel):
 				logging.debug('@Wc_1 move detected after %s seconds ,keep going...', round((time.time() - last_time_move_detected), 2))
 				last_time_move_detected = time.time()
 				time.sleep(1)
-			elif no_move_time > 3:
+			elif no_move_time > 200:
 				logging.debug('@Wc_1 no move detected for 3 minutes, stop procedure')
 				break
 			else:
