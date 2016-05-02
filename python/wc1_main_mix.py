@@ -1,5 +1,3 @@
-
-
 import threading 
 import time
 import logging 
@@ -16,7 +14,6 @@ WC1_OCCUPIED = False
 gpio = Sensors()
 detection_counter = 0
 usage_counter = 0
-
 
 def wc1_worker():
 
@@ -36,44 +33,42 @@ def wc1_worker():
 		logging.debug('   @Wc_1 door opened, stop procedure, stop time: %s ', time.strftime("%H:%M:%S"))
 		WC1_OCCUPIED = False
 		return
-
+ 
 	# Check if there is a move for 10 second and door are still closed
-	# Tutaj trzeba sie zastanowic, czy to zadziała, chodzi o wait_for_rdge :-) 
 	logging.debug('   #STEP 2  (check move) ------------')
 	start_second_check = time.time()
 
 	GPIO.add_event_detect(gpio.WC1_DOOR_sensor, GPIO.RISING)
 	move_detection = GPIO.wait_for_edge(gpio.WC1_MOVE_sensor, GPIO.FALLING, timeout=7000)
 	if move_detection is None or GPIO.event_detected(gpio.WC1_DOOR_sensor):
-		logging.debug('   @Wc_1 door opened while checking move for the first time OR no move detected, stop procedure, stop time: %s', time.strftime("%H:%M:%S"))
+		logging.debug('   @Wc_1 door opened while checking move for the first time OR no move detected, stop procedure, duration of second check: %.2f | ', (time.time() - start_second_check))
 		GPIO.remove_event_detect(gpio.WC1_DOOR_sensor)
 		WC1_OCCUPIED = False
 		return
 	else:
 		logging.debug('   @Wc_1 move detected after time duration: %.2f ', (time.time() - start_second_check))
 
-
 	# Wait foor door to be open 
-	logging.debug('#Step 3 (main loop) ------------')
+	logging.debug('   #Step 3 (main loop) ------------')
 	start_third_check = time.time()
 	last_time_move_detected = time.time()
 
-	GPIO.add_event_detect(GPIO.WC1_MOVE_sensor, GPIO.FALLING)
+	GPIO.add_event_detect(gpio.WC1_MOVE_sensor, GPIO.FALLING)
 	usage_counter += 1
-	logging.debug('@Wc1 #Usage number:  %s ',usage_counter)
+	logging.debug('   @Wc1 #Usage number:  %s ',usage_counter)
 
 	while True:
 		no_move_time = round((time.time() - last_time_move_detected), 2)
 
 		if GPIO.event_detected(gpio.WC1_DOOR_sensor):
-			logging.debug('@Wc_1 door opened, stop procedure, stop time: %s, Main loop duration: %s', time.strftime("%H:%M:%S"), round((time.time() - start_third_check), 2))
+			logging.debug('   @Wc_1 door opened, stop procedure, stop time: %s, Main loop duration: %s', time.strftime("%H:%M:%S"), round((time.time() - start_third_check), 2))
 			break 
 		elif GPIO.event_detected(gpio.WC1_MOVE_sensor):
-			logging.debug('@Wc_1 move detected after %s seconds ,keep going...', round((time.time() - last_time_move_detected), 2))
+			logging.debug('   @Wc_1 move detected after: %s seconds ,keep going...', round((time.time() - last_time_move_detected), 2))
 			last_time_move_detected = time.time()
-			time.sleep(1.1)
+			time.sleep(1)
 		elif no_move_time > 180:
-			logging.debug('@Wc_1 no move detected for 3 minutes, stop procedure')
+			logging.debug('   @Wc_1 no move detected for 3 minutes, stop procedure')
 			break
 		else:
 			time.sleep(0.1)
@@ -84,7 +79,6 @@ def wc1_worker():
 	gpio.wc1_led_free();
 	# send REST
 	WC1_OCCUPIED = False
-
 
 # Main Loop of the program
 while True:
@@ -102,6 +96,4 @@ while True:
 		t.join()
 		logging.debug('#Main Thread |  change state of the WC1 (Occupied --> Free) | thread total time(duration):  %.2f  \n\n\n', (time.time() - start_thread))
 	else:
-		time.sleep(1)
-
-
+		time.sleep(0.5)
