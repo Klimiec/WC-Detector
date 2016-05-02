@@ -19,7 +19,6 @@ def wc1_worker():
 
 	global gpio
 	global usage_counter
-	global WC1_OCCUPIED
 	
 	# Check door 
 	logging.debug('   #STEP 1 (check door) ------------')
@@ -31,7 +30,6 @@ def wc1_worker():
 		logging.debug('   @Wc_1 door still closed, check first time duration: %.2f sec',round((time.time() - start_first_check), 2))
 	else:
 		logging.debug('   @Wc_1 door opened, stop procedure after: %.2f sec',round((time.time() - start_first_check), 2))
-		WC1_OCCUPIED = False
 		return
  
 	# Check if there is a move for 10 second and door are still closed
@@ -40,7 +38,7 @@ def wc1_worker():
 
 	GPIO.add_event_detect(gpio.WC1_DOOR_sensor, GPIO.RISING)
 	is_move_detected = False
-	for i in range(1):
+	for i in range(100):
 		if gpio.is_wc1_motion_detected_by_PIR():
 			logging.debug('   @Wc_1 move detected after time duration: %.2f sec', (time.time() - start_second_check))
 			is_move_detected = True
@@ -50,7 +48,7 @@ def wc1_worker():
 			GPIO.remove_event_detect(gpio.WC1_DOOR_sensor)
 			return
 		else:
-			time.sleep(0.5)
+			time.sleep(0.1)
 
 	if is_move_detected == False:
 		logging.debug('   @Wc_1 no move detected for: %.2f  sec, stop procedure', (time.time() - start_second_check))
@@ -75,7 +73,6 @@ def wc1_worker():
 			logging.debug('   @Wc_1 move detected after: %s seconds ,keep going...', round((time.time() - last_time_move_detected), 2))
 			last_time_move_detected = time.time()
 			time.sleep(1)
-			return
 		elif no_move_time > 180:
 			logging.debug('   @Wc_1 no move detected for 3 minutes, stop procedure')
 			break
@@ -84,9 +81,6 @@ def wc1_worker():
 
 	# things to do after wc1 is free
 	GPIO.remove_event_detect(gpio.WC1_DOOR_sensor)
-	gpio.wc1_led_free();
-	# send REST
-	WC1_OCCUPIED = False
 
 # Main Loop of the program
 while True:
@@ -94,6 +88,7 @@ while True:
 		# change state of the WC1 to occupied
 		WC1_OCCUPIED = True
 		gpio.wc1_led_occupied()
+		# SEND REST
 		detection_counter += 1
 		logging.debug('#Main Thread |  change state of the WC1 (Free --> Occupied) | time:  %s | detection counter: %s', time.strftime("%H:%M:%S"), detection_counter)
 		
@@ -102,6 +97,10 @@ while True:
 		t = threading.Thread(target=wc1_worker, args=[])
 		t.start()
 		t.join()
+		
 		logging.debug('#Main Thread |  change state of the WC1 (Occupied --> Free) | thread total time(duration):  %.2f  \n\n\n', (time.time() - start_thread))
+		gpio.wc1_led_free()
+		# SEND REST
+		WC1_OCCUPIED = False
 	else:
 		time.sleep(0.5)
