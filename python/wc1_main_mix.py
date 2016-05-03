@@ -87,8 +87,11 @@ def wc1_worker():
 	GPIO.remove_event_detect(gpio.WC1_MOVE_sensor)
 
 # Main Loop of the program
+
+GPIO.add_event_detect(gpio.WC1_DOOR_sensor, GPIO.FALLING)
 while True:
-	if  WC1_OCCUPIED == False and gpio.is_wc1_door_closed():
+	if  WC1_OCCUPIED == False and GPIO.event_detected(gpio.WC1_DOOR_sensor):
+		GPIO.remove_event_detect(gpio.WC1_DOOR_sensor)
 		# change state of the WC1 to occupied
 		WC1_OCCUPIED = True
 		# SEND REST
@@ -106,5 +109,6 @@ while True:
 		gpio.wc1_led_free()
 		# SEND REST
 		WC1_OCCUPIED = False
+		GPIO.add_event_detect(gpio.WC1_DOOR_sensor, GPIO.FALLING)
 	else:
-		time.sleep(0.5)
+		time.sleep(0.1)

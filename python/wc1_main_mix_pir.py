@@ -103,4 +103,4 @@ while True:
 		# SEND REST
 		WC1_OCCUPIED = False
 	else:
-		time.sleep(0.5)
+		time.sleep(0.1)
