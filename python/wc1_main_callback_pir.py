@@ -115,7 +115,7 @@ def wc1_callback(channel):
 
 ######### Urinal Worker #########
 # WC1 event callback
-GPIO.add_event_detect(gpio.WC1_DOOR_sensor, GPIO.FALLING, callback=wc1_callback, bouncetime=250)
+GPIO.add_event_detect(gpio.WC1_DOOR_sensor, GPIO.FALLING, callback=wc1_callback, bouncetime=200)
 
 # Main Loop of the program
 while True:
