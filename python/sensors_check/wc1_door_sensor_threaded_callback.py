@@ -14,12 +14,13 @@ logging.basicConfig(level=logging.DEBUG,
 
 # Global
 detection_counter = 0
-
+gpio = Sensors()
 
 ######### WC1 Worker #########
 
 def wc1_callback(channel):
 	global detection_counter
+	global gpio
 	detection_counter += 1
 	logging.debug('   @Wc_1 door | new thread started at time:  %s | detection counter: %s', time.strftime("%H:%M:%S"), detection_counter)
 
