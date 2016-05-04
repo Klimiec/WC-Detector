@@ -14,6 +14,7 @@ class Sensors:
 	WC1_LED_GREEN = 3
 	WC1_DOOR_sensor = 10
 	WC1_MOVE_sensor = 9
+	WC1_MOVE_PIR_sensor = 5
 
 # WC2
 	WC2_LED_RED = 4
@@ -37,6 +38,7 @@ class Sensors:
 		GPIO.output(self.WC1_LED_GREEN, GPIO.LOW)
 		GPIO.setup(self.WC1_DOOR_sensor, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 		GPIO.setup(self.WC1_MOVE_sensor, GPIO.IN)
+		GPIO.setup(self.WC1_MOVE_PIR_sensor, GPIO.IN)
 
 
 		# WC2
@@ -74,7 +76,7 @@ class Sensors:
 
 	def is_wc1_motion_detected_by_PIR(self):
 		#detect if there is move in wc1 by PIR sensor
-		if GPIO.input(self.WC1_MOVE_sensor) == 1:
+		if GPIO.input(self.WC1_MOVE_PIR_sensor) == 1:
 			return True
 		else:
 			return False
