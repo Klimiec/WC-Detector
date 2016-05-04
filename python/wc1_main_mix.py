@@ -29,7 +29,7 @@ def wc1_worker():
 	if  door_detection is None:
 		logging.debug('   @Wc_1 door still closed, check first time duration: %.2f ',round((time.time() - start_first_check), 2))
 	else:
-		logging.debug('   @Wc_1 door opened, stop procedure, stop time: %s ', time.strftime("%H:%M:%S"))
+		logging.debug('   @Wc_1 door opened, stop procedure, stop time: %s  | duration of first check: %.2f ', time.strftime("%H:%M:%S"),round((time.time() - start_first_check), 2))
 		return
  
 	# Check if there is a move for 10 second and door are still closed
@@ -39,10 +39,9 @@ def wc1_worker():
 	GPIO.add_event_detect(gpio.WC1_DOOR_sensor, GPIO.RISING)
 	GPIO.add_event_detect(gpio.WC1_MOVE_sensor, GPIO.FALLING)
 	is_move_detected = False
-	for i in range(100):
+	for i in range(70):
 		if GPIO.event_detected(gpio.WC1_DOOR_sensor):
 			logging.debug('   @Wc_1 door opened while checking move for the first time, stop procedure, duration of second check: %.2f | ', (time.time() - start_second_check))
-			GPIO.remove_event_detect(gpio.WC1_DOOR_sensor)
 			GPIO.remove_event_detect(gpio.WC1_MOVE_sensor)
 			return
 		elif GPIO.event_detected(gpio.WC1_MOVE_sensor):
@@ -54,7 +53,6 @@ def wc1_worker():
 
 	if is_move_detected == False:
 		logging.debug('   @Wc_1 no move detected for: %.2f  sec, no door opened, stop procedure', (time.time() - start_second_check))
-		GPIO.remove_event_detect(gpio.WC1_DOOR_sensor)
 		GPIO.remove_event_detect(gpio.WC1_MOVE_sensor)
 		return
 
@@ -83,15 +81,12 @@ def wc1_worker():
 			time.sleep(0.1)
 
 	# things to do after wc1 is free
-	GPIO.remove_event_detect(gpio.WC1_DOOR_sensor)
 	GPIO.remove_event_detect(gpio.WC1_MOVE_sensor)
 
 # Main Loop of the program
 
-GPIO.add_event_detect(gpio.WC1_DOOR_sensor, GPIO.FALLING)
 while True:
-	if  WC1_OCCUPIED == False and GPIO.event_detected(gpio.WC1_DOOR_sensor):
-		GPIO.remove_event_detect(gpio.WC1_DOOR_sensor)
+	if  WC1_OCCUPIED == False and gpio.is_wc1_door_closed() and gpio.is_wc1_motion_detected_by_PIR():
 		# change state of the WC1 to occupied
 		WC1_OCCUPIED = True
 		# SEND REST
@@ -105,10 +100,11 @@ while True:
 		t.start()
 		t.join()
 		
+
 		logging.debug('#Main Thread |  change state of the WC1 (Occupied --> Free) | thread total time(duration):  %.2f  \n\n\n', (time.time() - start_thread))
+		GPIO.remove_event_detect(gpio.WC1_DOOR_sensor)
 		gpio.wc1_led_free()
 		# SEND REST
 		WC1_OCCUPIED = False
-		GPIO.add_event_detect(gpio.WC1_DOOR_sensor, GPIO.FALLING)
 	else:
 		time.sleep(0.1)
